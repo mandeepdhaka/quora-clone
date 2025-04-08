@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 70%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .question-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .question-list li {
+            padding: 15px;
+            background-color: #fafafa;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .question-list li a {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+        .question-list li p {
+            margin: 10px 0;
+            color: #777;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.like-btn {
+            background-color: #ff9900;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .logout-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border-radius: 50px;  /* Makes it round */
+            text-decoration: none;  /* Removes underline from the link */
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: darkred;  /* Changes color when hovered */
+        }
+        .login-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgb(230, 86, 86);  /* Makes the button blue */
+            color: white;
+            border-radius: 50px;  /* Makes it round */
+            text-decoration: none;  /* Removes underline from the link */
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: rgb(155, 34, 34);  /* Changes color when hovered */
+        }
+        .question-title {
+            text-decoration: none;  /* Removes underline */
+            color: #007bff;  /* Gives it a blue color */
+            font-weight: bold;
+            transition: color 0.3s ease, text-decoration 0.3s ease;  /* Smooth transition for hover effect */
+        }
+
+        .question-title:hover {
+            color: #0056b3;  /* Changes to darker blue on hover */
+            text-decoration: underline;  /* Adds underline on hover */
+        }
+
+
+    </style>
+    <script>
+        function toggleLike(button) {
+            if (button.innerHTML === "Like") {
+                button.innerHTML = "Unlike";
+                button.style.backgroundColor = "#ff6666";
+            } else {
+                button.innerHTML = "Like";
+                button.style.backgroundColor = "#ff9900";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>All Questions</h2>
+        <p class="link"><a href="{% url 'post_question' %}" class="login-btn" >Post a new question</a></p>
+
+        {% if user.is_authenticated %}
+            {% comment %} <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p> {% endcomment %}
+            <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}" class="logout-btn">Logout</a></p>
+
+        {% comment %} {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to participate in discussions</p>
+        {% endif %} {% endcomment %}
+         {% else %}
+            <p><a href="{% url 'login' %}" class="login-btn">Login</a> To participate in discussions</p>
+        {% endif %}
+
+        
+        <ul class="question-list">
+            {% for question in questions %}
+                <li>
+                    {% comment %} <h3><a href="{% url 'answer_question' question.id %}">{{ question.title }}</a></h3> {% endcomment %}
+                     <h3><a href="{% url 'answer_question' question.id %}" class="question-title">{{ question.title }}</a></h3>
+                    <p>{{ question.description }}</p>
+                    <p>Asked by: {{ question.created_by.username }}</p>
+                    {% for answer in answers %}
+    <div>
+        {% comment %} <p>{{ answer.content }}</p>
+        <a href="{% url 'like_answer' answer.id %}">Like</a> {% endcomment %}
+    </div>
+{% endfor %}
+
+                    {% comment %} <button class="like-btn" onclick="toggleLike(this)">Like</button> {% endcomment %}
+                    {% comment %} <form method="post" action="{% url 'like_answer' answer.id %}">
+                        {% csrf_token %}
+                        <button class="like-btn" onclick="toggleLike(this)">Like</button>
+                    </form> {% endcomment %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ question.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 70%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .question {
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .answers {
+            margin-top: 30px;
+        }
+        .answer {
+            background-color: #f1f1f1;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .answer h4 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .answer p {
+            margin: 10px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>{{ question.title }}</h2>
+        <p>{{ question.description }}</p>
+        <p>Asked by: {{ question.created_by.username }}</p>
+        
+        <div class="answers">
+            <h3>Answers:</h3>
+            {% if answers %}
+                {% for answer in answers %}
+                    <div class="answer">
+                        <h4>Answered by: {{ answer.created_by.username }}</h4>
+                        <p>{{ answer.text }}</p>
+                        <button class="like-btn" onclick="toggleLike(this)">Like</button>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No answers yet. Be the first to answer!</p>
+            {% endif %}
+        </div>
+
+        <a href="{% url 'post_answer' question.id %}">Post an answer</a>
+    </div>
+</body>
+</html>

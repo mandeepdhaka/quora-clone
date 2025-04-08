@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input[type="text"], input[type="password"], input[type="email"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: rgb(230, 86, 86);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: rgb(155, 34, 34);
+        }
+        .link {
+            text-align: center;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: -10px;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            const username = document.getElementById("id_username").value;
+            const password = document.getElementById("id_password").value;
+            const email = document.getElementById("id_email").value;
+
+            if (username === "" || password === "" || email === "") {
+                document.getElementById("error-message").innerText = "All fields are required!";
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        <form method="post" onsubmit="return validateForm()">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p id="error-message" class="error"></p>
+            <button type="submit">Register</button>
+        </form>
+        <p class="link">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+</body>
+</html>

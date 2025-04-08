@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer Question</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        textarea {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 3px;
+            font-size: 16px;
+            background-color:rgb(230, 86, 86);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: rgb(155, 34, 34);
+        }
+        .login-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgb(230, 86, 86);  /* Makes the button blue */
+            color: white;
+            border-radius: 50px;  /* Makes it round */
+            text-decoration: none;  /* Removes underline from the link */
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: rgb(155, 34, 34);  /* Changes color when hovered */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Answer of  Question: {{ question.title }}</h2>
+        <p>{{ question.description }}</p>
+        <div class="answers">
+            <h3>Answers:</h3>
+            {% if answers %}
+                {% for answer in answers %}
+                    <div class="answer">
+                        <h4>Answered by: {{ answer.created_by.username }}</h4>
+                        <p>{{ answer.content }}</p>
+                        {% comment %} <button class="like-btn" onclick="toggleLike(this)">Like</button> {% endcomment %}
+                        
+                        
+                        {% if answer.created_by != user%}
+                            {% if answer.likes.exists %}
+                                <button class="login-btn" disabled>
+                                    Liked
+                                </button>
+                            {% elif user.is_authenticated %}
+                                <form action="{% url 'like_answer' answer.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="login-btn">
+                                        Like
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No answers yet. Be the first to answer!</p>
+            {% endif %}
+        </div>
+        {% if user.is_authenticated %}
+            {% if user.id != question.created_by.id %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Submit Answer</button>
+                </form>
+            {% else %}
+            <p>This Question is posted by You</p>
+            {% endif %}
+        {% else %}
+            <p><a href="{% url 'login' %}" class="login-btn">Login</a> To participate in discussions</p>
+        {% endif %}
+        <p><a href="{% url 'home' %}">Back to all questions</a></p>
+    </div>
+</body>
+</html>
